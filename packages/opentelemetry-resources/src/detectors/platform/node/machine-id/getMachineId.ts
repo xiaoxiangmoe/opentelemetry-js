@@ -14,24 +14,29 @@
  * limitations under the License.
  */
 import * as process from 'process';
-
+import { getMachineId as getMachineIdDarwin } from './getMachineId-darwin';
+import { getMachineId as getMachineIdLinux } from './getMachineId-linux';
+import { getMachineId as getMachineIdWin } from './getMachineId-win';
+import { getMachineId as getMachineIdBsd } from './getMachineId-bsd';
+import { getMachineId as getMachineIdUnsupported } from './getMachineId-unsupported';
 let getMachineId: () => Promise<string>;
 
 switch (process.platform) {
   case 'darwin':
-    ({ getMachineId } = require('./getMachineId-darwin'));
+    getMachineId = getMachineIdDarwin;
     break;
   case 'linux':
-    ({ getMachineId } = require('./getMachineId-linux'));
+    getMachineId = getMachineIdLinux;
     break;
   case 'freebsd':
-    ({ getMachineId } = require('./getMachineId-bsd'));
+    getMachineId = getMachineIdBsd;
     break;
   case 'win32':
-    ({ getMachineId } = require('./getMachineId-win'));
+    getMachineId = getMachineIdWin;
     break;
   default:
-    ({ getMachineId } = require('./getMachineId-unsupported'));
+    getMachineId = getMachineIdUnsupported;
+    break;
 }
 
 export { getMachineId };
